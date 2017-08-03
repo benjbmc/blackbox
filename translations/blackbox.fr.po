@@ -1,0 +1,114 @@
+# $Id$
+#
+# French translation of Drupal (general)
+# Copyright 2016 REISZ <ben.reisz@gmail.com>
+# Generated from files:
+#  blackbox.admin.inc: n/a
+#  blackbox.module: n/a
+#  blackbox.info: n/a
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2015-03-19 14:15+0000\n"
+"PO-Revision-Date: 2015-03-19 14:15+0000\n"
+"Last-Translator: REISZ <ben.reisz@gmail.com>\n"
+"Language-Team: French <ben.reisz@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=0; plural=;\n"
+
+#: blackbox.admin.inc:16
+msgid "Content to display"
+msgstr "Contenu à afficher"
+
+#: blackbox.admin.inc:25
+msgid "Choose an existing entities"
+msgstr "Choisir une entité existante"
+
+#: blackbox.admin.inc:33
+msgid "Select an entity by using autocompletion"
+msgstr "Sélectionner une entité en utilisant l'autocomplétion"
+
+#: blackbox.admin.inc:38
+msgid "Start taping something..."
+msgstr "Commencez à taper un mot..."
+
+#: blackbox.admin.inc:50
+msgid "Duration before apparition"
+msgstr "Durée avant apparition"
+
+#: blackbox.admin.inc:61
+msgid "hours"
+msgstr "heure(s)"
+
+#: blackbox.admin.inc:69
+msgid "minutes"
+msgstr "minute(s)"
+
+#: blackbox.admin.inc:77
+msgid "seconds"
+msgstr "secondes"
+
+#: blackbox.admin.inc:83
+msgid "Change the default size values (400px x 400px)"
+msgstr "Changer la taille de la popup (par défaut: 400px x 400px)"
+
+#: blackbox.admin.inc:89
+msgid "Width"
+msgstr "Largeur"
+
+#: blackbox.admin.inc:103
+msgid "Height"
+msgstr "Hauteur"
+
+#: blackbox.admin.inc:127
+msgid "Please choose a content"
+msgstr "Choix de l'entité"
+
+#: blackbox.admin.inc:131
+msgid "Please indicate a duration"
+msgstr "Choix de la durée"
+
+#: blackbox.module:16
+msgid "View iframe embed code"
+msgstr ""
+
+#: blackbox.module:17
+msgid "Allow users to view the iframe embed / link code on this domain."
+msgstr ""
+
+#: blackbox.module:20
+msgid "Access iframe version"
+msgstr ""
+
+#: blackbox.module:21
+msgid "Allow users to view the iframe version of an entity"
+msgstr ""
+
+#: blackbox.module:85
+msgid "- None -"
+msgstr "- Aucun -"
+
+#: blackbox.module:164
+msgid "Blackbox block "
+msgstr ""
+
+#: blackbox.module:174
+msgid "Blackbox bloc"
+msgstr ""
+
+#: blackbox.module:32 blackbox.info:0
+msgid "Blackbox "
+msgstr ""
+
+#: blackbox.module:33
+msgid "A simple block with HTML content which appears after a certain time."
+msgstr "Un simple bloc avec du contenu HTML qui apparaît après un certain temps prédéfini."
+
+#: blackbox.info:0
+msgid "A simple block with an entity which appears after a certain time."
+msgstr "Un simple bloc qui affiche une entité après un certain temps prédéfini."
+

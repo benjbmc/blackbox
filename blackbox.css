@@ -1,0 +1,7 @@
+/**
+ * Blackbox simple style, just customize it like you want
+ */
+.region-blackbox {z-index:999; text-align: right;}
+#blackbox .node .container{max-width: 100% !important;}
+
+

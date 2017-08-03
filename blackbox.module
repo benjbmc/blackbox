@@ -1,0 +1,230 @@
+<?php
+
+// Load blackbox.admin.inc from the blackbox module.
+module_load_include('inc', 'blackbox', 'blackbox.admin');
+
+/**
+ * @file
+ * Provide an iframe display definition for common entity types.
+ */
+define('BLACKBOX_SIZE', FALSE);
+define('BLACKBOX_WIDTH', '400');
+define('BLACKBOX_HEIGHT', '400');
+
+/**
+ * Implements hook_permission().
+ */
+function blackbox_permission() {
+    return array(
+        'view iframe embed code' => array(
+            'title' => t('View iframe embed code'),
+            'description' => t('Allow users to view the iframe embed / link code on this domain.'),
+        ),
+        'access iframe version' => array(
+            'title' => t('Access iframe version'),
+            'description' => t('Allow users to view the iframe version of an entity'),
+        ),
+    );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function blackbox_menu() {
+    $items = array();
+
+    $items['admin/config/media/blackbox'] = array(
+        'title' => 'Blackbox ',
+        'description' => 'A simple block with HTML content which appears after a certain time.',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('blackboxadmin_settings'),
+        'access arguments' => array('administer site configuration'),
+        'file' => 'blackbox.admin.inc',
+    );
+
+    // URL to get titles of entites by using autocompletion
+    $items['blackbox/autocomplete/node_title'] = array(
+        'page callback' => 'blackbox_autocomplete_node_title',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK
+    );
+
+    return $items;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function blackbox_theme() {
+    global $language;
+    return array(
+        'blackbox_template' => array(
+            'variables' => array('title' => NULL, 'contents' => NULL, 'language' => $language),
+            'template' => 'blackbox',
+            'path' => drupal_get_path('module', 'blackbox'),
+        ),
+    );
+}
+
+/**
+ * Processes variables for blackbox.tpl.php.
+ *
+ * The $variables array contains the following elements:
+ * - title
+ * - contents
+ *
+ * @see blackbox.tpl.php
+ */
+function template_preprocess_blackbox(&$variables) {
+    global $base_url, $language;
+
+    $variables['title'] = check_plain($variables['title']);
+    $variables['base_url'] = $base_url;
+    $variables['language'] = $language;
+    $variables['language_rtl'] = ($language->direction == LANGUAGE_RTL);
+    $variables['dir'] = $language->direction ? 'rtl' : 'ltr';
+}
+
+/**
+ * Helper function to return all entities as an array.
+ */
+function _blackbox_entities_list($entity_id = '') {
+
+    $types = entity_get_info();
+    $options = array(0 => t('- None -'));
+    $types_ok = array('node', 'taxonomy_term');
+    foreach ($types as $key => $type) {
+        if ($type['fieldable'] && in_array($type['token type'], $types_ok)) {
+
+            $query = new EntityFieldQuery();
+
+            $query->entityCondition('entity_type', $type['token type'])
+                    ->propertyCondition('status', NODE_PUBLISHED)
+                    ->addMetaData('account', user_load(1)); // Run the query as user 1.
+
+            $result = $query->execute();
+
+            if (isset($result[$type['token type']])) {
+                $items_nids = array_keys($result[$type['token type']]);
+                $items = entity_load($type['token type'], $items_nids);
+                foreach ($items as $item) {
+                    if ($entity_id == '') {  // full list
+                        $options[$item->nid] = $item->title . ' - ' . $type['token type'] . ' (' . $item->type . ')';
+                    } else {  // only one entity
+                        if ($entity_id == $item->nid)
+                            $options[$item->nid] = $item->title . ' - ' . $type['token type'] . ' (' . $item->type . ')';
+                    }
+                }
+            }
+        }
+    }
+    return $options;
+}
+
+/**
+ * Function to select form duration
+ * @param type $unit
+ * @return int
+ */
+function select_duration($unit) {
+    $options = array();
+    switch ($unit):
+        case 'hours':
+            for ($i = 0; $i <= 24; $i++) {
+                $options[$i] = $i;
+            }
+            break;
+        case 'minutes':
+            for ($i = 0; $i < 60; $i++) {
+                $options[$i] = $i;
+            }
+            break;
+        case 'seconds':
+            for ($i = 5; $i < 60; $i += 5) {
+                $options[$i] = $i;
+            }
+            break;
+    endswitch;
+    return $options;
+}
+
+/**
+ * Callback function to get titles of published entities.
+ * @param type $key
+ */
+function blackbox_autocomplete_node_title($key = '') {
+    $matches = array();
+
+    $query = db_select('node', 'n');
+    $result = $query
+            ->fields('n', array('title', 'nid'))
+            ->condition('n.title', '%' . strtoupper(db_like($key)) . '%', 'LIKE')
+            ->condition('status', '1')
+            ->distinct('n.nid')
+            ->range(0, 5)
+            ->orderBy('n.title', 'ASC')
+            ->execute();
+
+    // Generation of results list to send
+    foreach ($result as $record) {
+        $matches[$record->title . ' (' . $record->nid . ')'] = check_plain($record->title);
+    }
+
+    // Convert results to JSON, then exit to avoid to return something to the theme
+    drupal_json_output($matches);
+    exit();
+}
+
+/**
+ * Block part
+ * @return string
+ */
+function blackbox_block_info() {
+    $blocks['blackbox'] = array(
+        'info' => t('Blackbox block '),
+        'status' => TRUE,
+        'visibility' => 1,
+        'region' => 'content',
+        'cache' => DRUPAL_CACHE_PER_ROLE, // Default
+    );
+    return $blocks;
+}
+
+function blackbox_block_view($delta = '') {
+    switch ($delta) {
+        case 'blackbox':
+            $block['subject'] = t('Blackbox bloc');
+            $block['content'] = theme('blackbox_template', array('title' => '', 'contents' => '')
+            );
+            break;
+    }
+    return $block;
+}
+
+/**
+ * Implements hook_init().
+ * Init session variables and js
+ * @global type $user
+ */
+function blackbox_init() {
+    global $user;
+    if (!isset($_SESSION))
+        drupal_session_start();
+
+    $values = (variable_get('blackbox')) ? variable_get('blackbox') : NULL;
+    if ($user->uid == 0 && !empty($values)) {
+        $str_time = time();
+        $show_time = $str_time + $values['hours'] * 60 * 60 + $values['minutes'] * 60 + $values['seconds'];
+        if (!isset($_SESSION['blackbox'])) { // if session exists, don't LOOP (popup may have already appeared)
+            drupal_add_js(array('blackbox' => array('start' => $str_time, 'showTime' => $show_time)), 'setting');
+        }
+        $current_nid = (arg(0) == 'node' && is_numeric(arg(1))) ? arg(1) : '';
+        $_SESSION['blackbox'] = array(
+            'start' => $str_time,
+            'show_time' => $show_time,
+            'content' => $values['content'] = ($current_nid != $values['content']) ? $values['content'] : NULL,
+            'width' => $values['width'],
+            'height' => $values['height'],
+        );
+    }
+}

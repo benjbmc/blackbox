@@ -1,0 +1,11 @@
+name = Blackbox
+description = A simple block containing an entity of your choice which appears after a certain time.
+dependencies[] = colorbox
+dependencies[] = colorbox_node
+core = 7.x
+configure = admin/config/media/blackbox
+
+files[] = blackbox.admin.inc
+
+stylesheets[all][] = blackbox.css
+scripts[] = blackbox.js
