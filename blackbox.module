@@ -208,8 +208,9 @@ function blackbox_block_view($delta = '') {
  */
 function blackbox_init() {
     global $user;
-    if (!isset($_SESSION))
-        drupal_session_start();
+    if (!isset($_SESSION)) {
+      drupal_session_start();
+    }
 
     $values = (variable_get('blackbox')) ? variable_get('blackbox') : NULL;
     if ($user->uid == 0 && !empty($values)) {
