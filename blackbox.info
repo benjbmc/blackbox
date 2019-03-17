@@ -2,6 +2,8 @@ name = Blackbox
 description = A simple block containing an entity of your choice which appears after a certain time.
 dependencies[] = colorbox
 dependencies[] = colorbox_node
+dependencies[] = token
+dependencies[] = fontawesome
 core = 7.x
 configure = admin/config/media/blackbox
 
@@ -9,3 +11,8 @@ files[] = blackbox.admin.inc
 
 stylesheets[all][] = blackbox.css
 scripts[] = blackbox.js
+
+; Information added by Drupal.org packaging script on 2018-12-03
+version = "7.x-1.x"
+core = "7.x"
+project = "blackbox"
