@@ -9,7 +9,7 @@ License - GPL (see LICENSE)
 Overview:
 --------
 Blackbox is a simple block containing an entity of your choice which appears after a certain time.
-What you can change : entity displayed, time before appearing, size of your box.
+What you can change : entity displayed, time before appearing, size of your box, possibility to show a phone picto to call the popup manually.
 
 This module is using the Colorbox module :
 "Colorbox is a light-weight, customizable lightbox plugin for jQuery 1.4.3+.
