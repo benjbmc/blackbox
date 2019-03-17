@@ -26,10 +26,10 @@ function blackboxadmin_settings() {
         '#title' => t('Choose an existing entities'),
         '#multiple' => FALSE,
         '#options' => $entities,
-        '#default_value' => get_value('content'),
+        '#default_value' => _blackbox_get_value('content'),
     );
 
-    $form['blackbox_content']['blackbox_select'] = array(
+    $form['blackbox_content']['blackbox_select_autocomplete'] = array(
         '#type' => 'checkbox',
         '#title' => t('Select an entity by using autocompletion'),
     );
@@ -40,7 +40,7 @@ function blackboxadmin_settings() {
         '#autocomplete_path' => 'blackbox/autocomplete/node_title',
         '#states' => array(
             'visible' => array(
-                array(':input[name="blackbox_select"]' => array('checked' => TRUE)),
+                array(':input[name="blackbox_select_autocomplete"]' => array('checked' => TRUE)),
             ),
         ),
     );
@@ -53,12 +53,12 @@ function blackboxadmin_settings() {
         '#required' => TRUE,
     );
 
-    $form['blackbox_duration']['blackbox_durationhours'] = array(
-        '#type' => 'select',
-        '#multiple' => FALSE,
-        '#options' => select_duration('hours'),
-        '#field_suffix' => t('hours'),
-        '#default_value' => get_value('hours'),
+    $form['blackbox_duration']['blackbox_durationseconds'] = array(
+      '#type' => 'select',
+      '#multiple' => FALSE,
+      '#options' => select_duration('seconds'),
+      '#field_suffix' => t('seconds'),
+      '#default_value' => _blackbox_get_value('seconds'),
     );
 
     $form['blackbox_duration']['blackbox_durationminutes'] = array(
@@ -66,21 +66,27 @@ function blackboxadmin_settings() {
         '#multiple' => FALSE,
         '#options' => select_duration('minutes'),
         '#field_suffix' => t('minutes'),
-        '#default_value' => get_value('minutes'),
+        '#default_value' => _blackbox_get_value('minutes'),
     );
 
-    $form['blackbox_duration']['blackbox_durationseconds'] = array(
-        '#type' => 'select',
-        '#multiple' => FALSE,
-        '#options' => select_duration('seconds'),
-        '#field_suffix' => t('seconds'),
-        '#default_value' => get_value('seconds'),
+    $form['blackbox_duration']['blackbox_durationhours'] = array(
+      '#type' => 'select',
+      '#multiple' => FALSE,
+      '#options' => select_duration('hours'),
+      '#field_suffix' => t('hours'),
+      '#default_value' => _blackbox_get_value('hours'),
+    );
+
+    $form['blackbox_show_link'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Show the link to call manually the popup (phone picto in position fixed on the right)'),
+      '#default_value' => _blackbox_get_value('show_link'),
     );
 
     $form['blackbox_size'] = array(
         '#type' => 'checkbox',
         '#title' => t('Change the default size values (400px x 400px)'),
-        '#default_value' => get_value('size'),
+        '#default_value' => _blackbox_get_value('size'),
     );
 
     $form['blackbox_width'] = array(
@@ -89,7 +95,7 @@ function blackboxadmin_settings() {
         '#size' => 8,
         '#maxlength' => 5,
         '#field_suffix' => 'px',
-        '#default_value' => get_value('width'),
+        '#default_value' => _blackbox_get_value('width'),
         '#states' => array(
             'visible' => array(
                 array(':input[name="blackbox_size"]' => array('checked' => TRUE)),
@@ -103,7 +109,7 @@ function blackboxadmin_settings() {
         '#size' => 8,
         '#maxlength' => 5,
         '#field_suffix' => 'px',
-        '#default_value' => get_value('height'),
+        '#default_value' => _blackbox_get_value('height'),
         '#states' => array(
             'visible' => array(
                 array(':input[name="blackbox_size"]' => array('checked' => TRUE)),
@@ -159,8 +165,10 @@ function blackbox_admin_settings_submit($form, &$form_state) {
     $values['hours'] = $form_state['values']['blackbox_durationhours'];
     $values['minutes'] = $form_state['values']['blackbox_durationminutes'];
     $values['seconds'] = $form_state['values']['blackbox_durationseconds'];
+    $values['show_link'] = $form_state['values']['blackbox_show_link'];
 
     variable_set('blackbox', $values);
+    drupal_flush_all_caches();
 }
 
 /**
@@ -168,12 +176,13 @@ function blackbox_admin_settings_submit($form, &$form_state) {
  * @param type $field
  * @return type
  */
-function get_value($field = '') {
+function _blackbox_get_value($field = '') {
     $value = NULL;
     $blackbox_array = variable_get('blackbox');
     if ($field != '' && is_array($blackbox_array)) {
         switch ($field):
             case 'content':
+            case 'show_link':
                 $value = (isset($blackbox_array[$field])) ? $blackbox_array[$field] : 0;
                 break;
             case 'hours':

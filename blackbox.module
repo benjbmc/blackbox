@@ -89,7 +89,6 @@ function template_preprocess_blackbox(&$variables) {
  * Helper function to return all entities as an array.
  */
 function _blackbox_entities_list($entity_id = '') {
-
     $types = entity_get_info();
     $options = array(0 => t('- None -'));
     $types_ok = array('node', 'taxonomy_term');
@@ -176,56 +175,77 @@ function blackbox_autocomplete_node_title($key = '') {
 }
 
 /**
- * Block part
- * @return string
+ * Implements hook_block_info().
  */
 function blackbox_block_info() {
     $blocks['blackbox'] = array(
-        'info' => t('Blackbox block '),
-        'status' => TRUE,
-        'visibility' => 1,
+        'info' => t('Blackbox block'),
         'region' => 'content',
-        'cache' => DRUPAL_CACHE_PER_ROLE, // Default
+        'status' => 1,
+        'visibility' => BLOCK_VISIBILITY_NOTLISTED //Shows this block on every page except the listed pages.
     );
     return $blocks;
 }
 
+
+/**
+ * Implements hook_block_view().
+ */
 function blackbox_block_view($delta = '') {
+    $block = array();
     switch ($delta) {
         case 'blackbox':
-            $block['subject'] = t('Blackbox bloc');
-            $block['content'] = theme('blackbox_template', array('title' => '', 'contents' => '')
-            );
+            $block['subject'] = '<none>';
+            $block['content'] = theme('blackbox_template', array('title' => '', 'contents' => ''));
             break;
     }
     return $block;
 }
 
 /**
+ * Implements hook_block_view_alter().
+ */
+function blackbox_block_view_alter(&$data, $block) {
+  if (!empty($block->title) && $block->title == t('Blackbox block')) {
+    $block->title = '<none>';
+  }
+}
+
+/**
  * Implements hook_init().
+ *
  * Init session variables and js
  * @global type $user
  */
 function blackbox_init() {
     global $user;
     if (!isset($_SESSION)) {
-      drupal_session_start();
+        drupal_session_start();
     }
 
     $values = (variable_get('blackbox')) ? variable_get('blackbox') : NULL;
     if ($user->uid == 0 && !empty($values)) {
         $str_time = time();
         $show_time = $str_time + $values['hours'] * 60 * 60 + $values['minutes'] * 60 + $values['seconds'];
-        if (!isset($_SESSION['blackbox'])) { // if session exists, don't LOOP (popup may have already appeared)
-            drupal_add_js(array('blackbox' => array('start' => $str_time, 'showTime' => $show_time)), 'setting');
-        }
         $current_nid = (arg(0) == 'node' && is_numeric(arg(1))) ? arg(1) : '';
-        $_SESSION['blackbox'] = array(
-            'start' => $str_time,
-            'show_time' => $show_time,
-            'content' => $values['content'] = ($current_nid != $values['content']) ? $values['content'] : NULL,
-            'width' => $values['width'],
-            'height' => $values['height'],
-        );
+        if (!isset($_SESSION['blackbox'])) { // if session exists, don't LOOP (popup may have already appeared)
+            $_SESSION['blackbox'] = array(
+                'start' => $str_time,
+                'show_time' => $show_time,
+                'content' => $values['content'] = ($current_nid != $values['content']) ? $values['content'] : NULL,
+                'width' => $values['width'],
+                'height' => $values['height'],
+                'show_link' => $values['show_link']
+            );
+        }
+        else {
+            $_SESSION['blackbox']['start'] = $str_time;
+            $_SESSION['blackbox']['show_time'] = $show_time;
+            $_SESSION['blackbox']['content'] = $values['content'] = ($current_nid != $values['content']) ? $values['content'] : NULL;
+            $_SESSION['blackbox']['width'] = $values['width'];
+            $_SESSION['blackbox']['height'] = $values['height'];
+            $_SESSION['blackbox']['show_link'] = $values['show_link'];
+        }
+        drupal_add_js(array('blackbox' => array('start' => $str_time, 'showTime' => $show_time)), 'setting');
     }
 }

@@ -11,7 +11,6 @@ jQuery(function($) {
     }
 
     function myBlackbox() {
-        var start = Drupal.settings.blackbox.start;
         var showTime = Drupal.settings.blackbox.showTime;
         var currentTime = Math.round((new Date).getTime() / 1000);
         var stop = false;
