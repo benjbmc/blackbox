@@ -1,0 +1,7 @@
+blackbox-lib:
+  version: VERSION
+  js:
+    js/blackbox.js: {}
+  css:
+    theme:
+      styles/blackbox.css: {}

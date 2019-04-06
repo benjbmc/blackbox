@@ -1,0 +1,13 @@
+services:
+  plugin.manager.blackbox_plugin:
+    class: Drupal\blackbox\BlackboxPluginManager
+    arguments: ['@module_handler', '@cache.discovery']
+  blackbox.route_subscriber:
+    class: Drupal\blackbox\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }
+
+  init_subscriber:
+    class: Drupal\blackbox\EventSubscriber\InitSubscriber
+    tags:
+      - { name: event_subscriber }

@@ -1,0 +1,33 @@
+blackbox.admin_settings:
+  path: '/admin/config/media/blackbox'
+  defaults:
+    _form: '\Drupal\blackbox\Form\BlackboxSettingsForm'
+    _title: 'Blackbox settings'
+  requirements:
+    _permission: 'administer site configuration'
+  options:
+    _admin_route: TRUE
+
+blackbox.autocomplete_node_title:
+  path: /blackbox/autocomplete/node_title
+  defaults:
+    _controller: '\Drupal\blackbox\Controller\BlackboxAutocompleteController::blackboxAutocompleteNodeTitle'
+  requirements:
+    _permission: 'access content'
+
+#blackbox.autocomplete:
+#  path: '/blackbox/autocomplete/node_title'
+#  #path: '/token/autocomplete/{token_type}/{filter}'
+#  defaults:
+#    _controller: '\Drupal\blackbox\Controller\TokenAutocompleteController::autocomplete'
+#  requirements:
+#    _access: 'TRUE'
+#'page callback' => 'blackbox_autocomplete_node_title',
+
+blackbox.blackbox_autocomplete_controller_note_title:
+  path: '/blackbox/autocomplete/{name}'
+  defaults:
+    _controller: '\Drupal\blackbox\Controller\BlackboxAutocompleteController::blackboxAutocompleteNodeTitle'
+    _title: 'URL to get titles of entites by using autocompletion'
+  requirements:
+    _permission: 'access content'

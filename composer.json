@@ -1,0 +1,14 @@
+{
+  "name": "drupal/blackbox",
+  "type": "drupal-module",
+  "description": "A simple block containing an entity of your choice which appears after a certain time.",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/blackbox",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/blackbox",
+    "source": "http://cgit.drupalcode.org/blackbox"
+  },
+  "require": { }
+}

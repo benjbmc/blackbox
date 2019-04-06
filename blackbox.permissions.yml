@@ -1,0 +1,6 @@
+'view iframe embed code':
+  title: 'View iframe embed code'
+  description: 'Allow users to view the iframe embed / link code on this domain.'
+'access iframe version':
+  title: 'Access iframe version'
+  description: 'Allow users to view the iframe version of an entity'
