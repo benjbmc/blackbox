@@ -1,8 +1,8 @@
-name: 'blackbox'
+name: 'Blackbox'
 type: module
 description: 'A simple block containing an entity of your choice which appears after a certain time.'
 core: 8.x
 package: 'Custom'
 dependencies:
-  - colorbox
-  - fontawesome
+  - colorbox:colorbox
+  - fontawesome:fontawesome
